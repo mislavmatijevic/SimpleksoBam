@@ -22,7 +22,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
     ${InputSyle};
-    width: 300px;
+    display: block;
 `;
 
 export const Select = styled.select`

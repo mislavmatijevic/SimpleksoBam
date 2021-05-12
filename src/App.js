@@ -1,8 +1,8 @@
-import Simpleks from './pages/Simpleks';
+import SimpleksPage from './pages/SimpleksPage';
 
 function App() {
   return (
-    <Simpleks></Simpleks>
+    <SimpleksPage />
   );
 }
 
