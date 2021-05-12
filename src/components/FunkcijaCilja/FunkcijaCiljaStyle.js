@@ -1,7 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const Container = styled.div`
+`;
 
+export const SpawnAnimation = keyframes`
+    from {opacity: 0%;}
+    to {opacity: 100%;}
 `;
 
 export const InputSyle = css`
@@ -12,17 +16,27 @@ export const InputSyle = css`
     border-style: outset;
     margin: 5px 5px 20px;
     font-size: 15px;
+    display: ${props => props?.display};
+
     &:focus{
         border-color: greenyellow;
     }
+
+    animation-name: ${SpawnAnimation};
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
 `;
 
+
 export const Label = styled.label`
+    ${InputSyle};
+    border: none;
+    margin: 10px 7px 0;
+    font-size: large;
 `;
 
 export const Input = styled.input`
     ${InputSyle};
-    display: block;
 `;
 
 export const Select = styled.select`
