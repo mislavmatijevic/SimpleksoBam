@@ -8,12 +8,16 @@ const SimpleksPage = () => {
     const [simpleksData, setSimpleksData] = useState(null);
     const [simpleksSmjer, setSimpleksSmjer] = useState(null);
 
+    function PodaciFunkcijeCilja() {
+
+    }
+
     return (
         <Main>
-            <FunkcijaCilja setSimpleksData={setSimpleksData} setSimpleksSmjer={setSimpleksSmjer} />
+            <FunkcijaCilja vratiPodatke={PodaciFunkcijeCilja} />
 
             {simpleksData && simpleksSmjer &&
-                <SimpleksTablica nepoznanice={simpleksData} smjer={simpleksSmjer} />
+                <SimpleksTablica />
             }
         </Main>
     )
