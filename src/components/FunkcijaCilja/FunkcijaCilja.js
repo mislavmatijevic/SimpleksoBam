@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Input, Label, Select } from './FunkcijaCiljaStyle';
+import { Label } from '../../generalStyles/generalStyles';
+import { Container, Input, Select } from './FunkcijaCiljaStyle';
 
 function IzvadiBrojeveIzTekstaUPolje(tekst) {
     return tekst.split(' ').filter((elementTeksta) => {
@@ -55,20 +56,22 @@ const FunkcijaCilja = (props) => {
             return;
         }
 
-        setVrijednostiFunkcijeCilja(razdvojeniKoeficijenti);
+        setVrijednostiFunkcijeCilja([...razdvojeniKoeficijenti]);
 
-        let parsiraniKoeficijentiZaFunkcijuCilja = uredanIspisBrojevaIzPolja(razdvojeniKoeficijenti);
 
+        let placeholderiUvjeta = [];
         let i = 1;
         razdvojeniKoeficijenti.forEach((element, index) => {
-            razdvojeniKoeficijenti[index] = (i++) * 10;
+            placeholderiUvjeta[index] = (i++) * 10;
         });
 
-        razdvojeniKoeficijenti = razdvojeniKoeficijenti.toString().replaceAll(',', ' ');
-        razdvojeniKoeficijenti = "npr. " + razdvojeniKoeficijenti;
+        placeholderiUvjeta = placeholderiUvjeta.toString().replaceAll(',', ' ');
+        placeholderiUvjeta = "npr. " + placeholderiUvjeta;
 
-        setPlaceholderKoeficijenata(razdvojeniKoeficijenti);
-        setFunkcijaCilja(parsiraniKoeficijentiZaFunkcijuCilja);
+        setPlaceholderKoeficijenata([placeholderiUvjeta]);
+        setFunkcijaCilja([...uredanIspisBrojevaIzPolja(razdvojeniKoeficijenti)]);
+        setPoljeUvjeta([...poljeUvjeta]);
+        setPoljeParsiranihUvjeta([...poljeParsiranihUvjeta]);
     }
 
     // Uvjeti: 
@@ -78,7 +81,7 @@ const FunkcijaCilja = (props) => {
     function promjenaBrojaUvjeta(upisanBrojUvjeta) {
         let brojUvjeta = IzvadiBrojeveIzTekstaUPolje(upisanBrojUvjeta)[0];
 
-        if (brojUvjeta === undefined) {
+        if (brojUvjeta === undefined || brojUvjeta < 1) {
             setPoljeUvjeta([]);
             setPoljeParsiranihUvjeta([]);
             return;
@@ -98,8 +101,8 @@ const FunkcijaCilja = (props) => {
         }
 
         if (poljeUvjeta.length > brojUvjeta) {
-            let smanjenoPolje = poljeUvjeta;
-            let smanjenoPoljeParsiranih = poljeParsiranihUvjeta;
+            let smanjenoPolje = [...poljeUvjeta];
+            let smanjenoPoljeParsiranih = [...poljeParsiranihUvjeta];
 
             for (let index = poljeUvjeta.length; index > brojUvjeta; index--) {
                 smanjenoPolje.pop();
@@ -127,7 +130,7 @@ const FunkcijaCilja = (props) => {
         if (uvjet["desnaStranaUvjeta"]) parsiraniUvjet.push(" " + uvjet["desnaStranaUvjeta"]);
         else parsiraniUvjet.push("  granica?");
 
-        let promijenjenoPoljeParsiranihUvjeta = poljeParsiranihUvjeta;
+        let promijenjenoPoljeParsiranihUvjeta = [...poljeParsiranihUvjeta];
         promijenjenoPoljeParsiranihUvjeta[index] = parsiraniUvjet;
         setPoljeParsiranihUvjeta([...promijenjenoPoljeParsiranihUvjeta]);
     }
@@ -184,7 +187,7 @@ const FunkcijaCilja = (props) => {
                 props.setSimpleksSmjer(null);
             }
         }
-    }, [poljeUvjeta])
+    }, [poljeUvjeta, smjer, vrijednostiFunkcijeCilja])
 
     function uvjetPotpun(uvjet) {
         return (uvjet["lijevaStranaUvjeta"]?.length === vrijednostiFunkcijeCilja.length && uvjet["ograničenjeUvjeta"] && uvjet["ograničenjeUvjeta"] !== nepoznataVrijednost && uvjet["desnaStranaUvjeta"])
@@ -221,7 +224,6 @@ const FunkcijaCilja = (props) => {
             }
             {
                 poljeUvjeta?.map((value, index) => {
-                    let prikazan = false;
                     return (
                         <div key={index}>
                             <Label htmlFor="koefUPoljuUvjeta">Koeficijenti uz {index + 1}. uvjet: </Label>
