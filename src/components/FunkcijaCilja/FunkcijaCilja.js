@@ -3,7 +3,7 @@ import { Container, Input, Label, Select } from './FunkcijaCiljaStyle';
 
 function IzvadiBrojeveIzTekstaUPolje(tekst) {
     return tekst.split(' ').filter((elementTeksta) => {
-        return /^[1-9]+[0-9]*$/.test(elementTeksta);
+        return /^([0]){1}|([0-9]+)$/.test(elementTeksta);
     });
 }
 
@@ -22,7 +22,7 @@ function uredanIspisBrojevaIzPolja(polje) {
 
 const FunkcijaCilja = (props) => {
 
-    const [koeficijenti, setKoeficijenti] = useState(null)
+    const [vrijednostiFunkcijeCilja, setVrijednostiFunkcijeCilja] = useState(null)
     const [funkcijaCilja, setFunkcijaCilja] = useState(null)
     const [placeholderKoeficijenata, setPlaceholderKoeficijenata] = useState(null)
     const [labelWidth, setLabelWidth] = useState("225px")
@@ -48,13 +48,14 @@ const FunkcijaCilja = (props) => {
 
         if (razdvojeniKoeficijenti === undefined || razdvojeniKoeficijenti.length === 0) {
             setFunkcijaCilja(null);
-            setKoeficijenti(null);
+            setVrijednostiFunkcijeCilja(null);
             setSmjer(null);
             setPoljeUvjeta([]);
+            setPoljeParsiranihUvjeta([]);
             return;
         }
 
-        setKoeficijenti(razdvojeniKoeficijenti);
+        setVrijednostiFunkcijeCilja(razdvojeniKoeficijenti);
 
         let parsiraniKoeficijentiZaFunkcijuCilja = uredanIspisBrojevaIzPolja(razdvojeniKoeficijenti);
 
@@ -132,31 +133,31 @@ const FunkcijaCilja = (props) => {
     }
 
     function odrediUvjet(indexUvjeta, dioUvjeta, vrijednost) {
-        let pravaVrijednostDijela = null;
+        let novaVrijednostDijela = null;
         let promijenjenoStanjeJednadžbi = poljeUvjeta;
 
         switch (dioUvjeta) {
 
             case "lijevaStranaUvjeta":
-                pravaVrijednostDijela = IzvadiBrojeveIzTekstaUPolje(vrijednost);
-                if (pravaVrijednostDijela === undefined || pravaVrijednostDijela.length === 0) pravaVrijednostDijela = [];
+                novaVrijednostDijela = IzvadiBrojeveIzTekstaUPolje(vrijednost);
+                if (novaVrijednostDijela === undefined || novaVrijednostDijela.length === 0) novaVrijednostDijela = [];
                 break;
 
             case "ograničenjeUvjeta":
-                if (vrijednost === nepoznataVrijednost) pravaVrijednostDijela = null;
-                pravaVrijednostDijela = vrijednost;
+                if (vrijednost === nepoznataVrijednost) novaVrijednostDijela = null;
+                novaVrijednostDijela = vrijednost;
                 break;
 
             case "desnaStranaUvjeta":
-                pravaVrijednostDijela = IzvadiBrojeveIzTekstaUPolje(vrijednost)[0];
-                if (pravaVrijednostDijela === undefined) pravaVrijednostDijela = null;
+                novaVrijednostDijela = IzvadiBrojeveIzTekstaUPolje(vrijednost)[0];
+                if (novaVrijednostDijela === undefined) novaVrijednostDijela = null;
                 break;
 
             default:
                 return;
         }
 
-        promijenjenoStanjeJednadžbi[indexUvjeta][dioUvjeta] = pravaVrijednostDijela;
+        promijenjenoStanjeJednadžbi[indexUvjeta][dioUvjeta] = novaVrijednostDijela;
 
         setPoljeUvjeta([...promijenjenoStanjeJednadžbi]);
 
@@ -174,14 +175,19 @@ const FunkcijaCilja = (props) => {
             });
 
             if (uvjetiDovršeni) {
-                props.vratiPodatke(koeficijenti, poljeUvjeta);
+                props.setVrijednostiFunkcijeCilja(vrijednostiFunkcijeCilja);
+                props.setPoljeUvjeta(poljeUvjeta);
+                props.setSimpleksSmjer(smjer);
+            } else {
+                props.setVrijednostiFunkcijeCilja(null);
+                props.setPoljeUvjeta(null);
+                props.setSimpleksSmjer(null);
             }
         }
-
     }, [poljeUvjeta])
 
     function uvjetPotpun(uvjet) {
-        return (uvjet["lijevaStranaUvjeta"]?.length > 0 && uvjet["ograničenjeUvjeta"] && uvjet["ograničenjeUvjeta"] !== nepoznataVrijednost && uvjet["desnaStranaUvjeta"])
+        return (uvjet["lijevaStranaUvjeta"]?.length === vrijednostiFunkcijeCilja.length && uvjet["ograničenjeUvjeta"] && uvjet["ograničenjeUvjeta"] !== nepoznataVrijednost && uvjet["desnaStranaUvjeta"])
     }
 
     function odrediSmjer(values) {
@@ -220,16 +226,16 @@ const FunkcijaCilja = (props) => {
                         <div key={index}>
                             <Label htmlFor="koefUPoljuUvjeta">Koeficijenti uz {index + 1}. uvjet: </Label>
                             <Input name="koefUPoljuUvjeta1" placeholder={placeholderKoeficijenata} onChange={(event) => odrediUvjet(index, "lijevaStranaUvjeta", event.target.value)} />
-
                             <Select name="koefUPoljuUvjeta2" onChange={(event) => odrediUvjet(index, "ograničenjeUvjeta", event.target.value)}>
                                 <option>{nepoznataVrijednost}</option>
                                 <option>≤</option>
                                 <option>≥</option>
+                                <option>=</option>
                             </Select>
                             <Input name="koefUPoljuUvjeta3" width="50px" placeholder="200" onChange={(event) => odrediUvjet(index, "desnaStranaUvjeta", event.target.value)} />
-                            <br></br>
+                            
                             {poljeParsiranihUvjeta && poljeParsiranihUvjeta[index]?.length !== 0 &&
-                                <Label color={uvjetPotpun(poljeUvjeta[index]) ? "green" : "darkred"} textAlign="center" display="block">{poljeParsiranihUvjeta[index]}</Label>
+                                <Label color={uvjetPotpun(poljeUvjeta[index]) ? "green" : "darkred"} >{poljeParsiranihUvjeta[index]}</Label>
                             }
                         </div>
                     )

@@ -15,20 +15,18 @@ const SimpleksTablica = (props) => {
     return (
         <>
             <SimpleksTablicaStyle>
-                <caption>Iteracija br. 1</caption>
+                <caption>Početna tablica</caption>
                 <thead>
-                    {prvaIteracija?.zaglavlje.map((index, value) => {
-                        <th>{value}<sub>{index}</sub></th>
-                    })}
+                    <th>Cj</th>
+                    <th>Var</th>
+                    <th>Kol</th>
+                    <th>x1</th>
+                    <th>x2</th>
+                    <th>x3</th>
+                    <th>R</th>
                 </thead>
                 <tbody>
-                    {
-                        prvaIteracija?.sadržajIteracije.map((sadržajIteracije) => {
-                            return (
-                                <td>{sadržajIteracije}</td>
-                            )
-                        })
-                    }
+                    <td></td>
                 </tbody>
             </SimpleksTablicaStyle>
         </>

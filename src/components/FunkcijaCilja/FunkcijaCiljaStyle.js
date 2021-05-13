@@ -1,7 +1,6 @@
 import styled, { css, keyframes } from 'styled-components';
 
 export const Container = styled.div`
-    flex-direction: row;
 `;
 
 export const SpawnAnimation = keyframes`
@@ -19,7 +18,7 @@ export const InputSyle = css`
     display: ${props => props?.display};
     width: ${props => props?.width};
     text-align: ${props => props?.textAlign};
-    transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);  
+    transition: all 0.5s cubic-bezier(0, 0.5, 0.655, 1);
 
     &:focus{
         border-color: greenyellow;
