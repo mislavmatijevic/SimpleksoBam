@@ -29,6 +29,8 @@ export function IzradiKanonski(poljeUvjeta) {
         poljeUvjetiUKanonski[i]["lijevaStranaUvjeta"] = UredanIspisBrojevaIzPolja(poljeUvjetiUKanonski[i]["lijevaStranaUvjeta"]);
         switch (poljeUvjetiUKanonski[i]["ograničenjeUvjeta"]) {
             case "=":
+                poljeUvjetiUKanonski[i]["lijevaStranaUvjeta"].push(<span> + w<sub>{brojacArtificijalnih++}</sub></span>);
+                poljeUvjetiUKanonski[i]["ograničenjeUvjeta"] = " =";
                 continue;
 
             case "≤":

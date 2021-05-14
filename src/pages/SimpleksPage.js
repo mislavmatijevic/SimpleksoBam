@@ -21,7 +21,7 @@ const SimpleksPage = () => {
                     <Label display="block" color="blue">Kanonski oblik:</Label>
                     {IzradiKanonski(poljeUvjetaJSON).map((value, index) => {
                         return (
-                            <Label>{value.lijevaStranaUvjeta} {value.ograničenjeUvjeta} {value.desnaStranaUvjeta}</Label>
+                            <Label display="block" color="blue">{value.lijevaStranaUvjeta} {value.ograničenjeUvjeta} {value.desnaStranaUvjeta}</Label>
                             )
                     })
                     }
