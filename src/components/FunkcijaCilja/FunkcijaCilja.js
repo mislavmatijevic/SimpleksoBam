@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Label } from '../../generalStyles/generalStyles';
 import { Container, Input, Select } from './FunkcijaCiljaStyle';
-
-function IzvadiBrojeveIzTekstaUPolje(tekst) {
-    return tekst.split(' ').filter((elementTeksta) => {
-        return /^([0]){1}|([0-9]+)$/.test(elementTeksta);
-    });
-}
-
-function uredanIspisBrojevaIzPolja(polje) {
-    let izlaznoPolje = [];
-
-    polje?.forEach((element, i) => {
-        let objektIspisa = <span key={i * 2}>{element}x<sub key={i * 2}>{i + 1}</sub></span>;
-        izlaznoPolje.push(objektIspisa);
-        izlaznoPolje.push(<span key={i * 2 - 1}> + </span>);
-    });
-    izlaznoPolje.pop();
-
-    return izlaznoPolje;
-}
+import { IzvadiBrojeveIzTekstaUPolje, UredanIspisBrojevaIzPolja } from './../../lib/functions/ispisJednadžbi';
 
 const FunkcijaCilja = (props) => {
 
@@ -69,7 +51,7 @@ const FunkcijaCilja = (props) => {
         placeholderiUvjeta = "npr. " + placeholderiUvjeta;
 
         setPlaceholderKoeficijenata([placeholderiUvjeta]);
-        setFunkcijaCilja([...uredanIspisBrojevaIzPolja(razdvojeniKoeficijenti)]);
+        setFunkcijaCilja([...UredanIspisBrojevaIzPolja(razdvojeniKoeficijenti)]);
         setPoljeUvjeta([...poljeUvjeta]);
         setPoljeParsiranihUvjeta([...poljeParsiranihUvjeta]);
     }
@@ -119,7 +101,7 @@ const FunkcijaCilja = (props) => {
         let parsiraniUvjet = [];
 
         if (uvjet["lijevaStranaUvjeta"].length !== 0) {
-            parsiraniUvjet = uredanIspisBrojevaIzPolja(uvjet["lijevaStranaUvjeta"]);
+            parsiraniUvjet = UredanIspisBrojevaIzPolja(uvjet["lijevaStranaUvjeta"]);
         } else {
             parsiraniUvjet.push("uvjet?")
         }
@@ -169,7 +151,7 @@ const FunkcijaCilja = (props) => {
 
     // Pretvori uvjet u string koji je prava matematička nejednadžba.
     useEffect(() => {
-        if (poljeUvjeta) {
+        if (poljeUvjeta.length > 0) {
             let uvjetiDovršeni = true;
             poljeUvjeta.forEach((value) => {
                 if (!uvjetPotpun(value)) {
@@ -178,15 +160,17 @@ const FunkcijaCilja = (props) => {
             });
 
             if (uvjetiDovršeni) {
-                props.setVrijednostiFunkcijeCilja(vrijednostiFunkcijeCilja);
-                props.setPoljeUvjeta(poljeUvjeta);
+                props.setVrijednostiFunkcijeCiljaJSON(JSON.stringify(vrijednostiFunkcijeCilja));
+                props.setPoljeUvjetaJSON(JSON.stringify(poljeUvjeta));
                 props.setSimpleksSmjer(smjer);
-            } else {
-                props.setVrijednostiFunkcijeCilja(null);
-                props.setPoljeUvjeta(null);
-                props.setSimpleksSmjer(null);
+                return;
             }
         }
+
+        props.setVrijednostiFunkcijeCiljaJSON(null);
+        props.setPoljeUvjetaJSON(null);
+        props.setSimpleksSmjer(null);
+
     }, [poljeUvjeta, smjer, vrijednostiFunkcijeCilja])
 
     function uvjetPotpun(uvjet) {
