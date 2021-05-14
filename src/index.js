@@ -4,9 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { PodaciProvider } from './components/Context/PodaciContext'
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <PodaciProvider>
+      <App />
+    </PodaciProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

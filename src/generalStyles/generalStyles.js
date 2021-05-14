@@ -11,7 +11,10 @@ export const InputSyle = css`
     border: 1px outset yellowgreen;
     border-style: outset;
     margin: 5px 5px 20px;
+
     font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
     display: ${props => props?.display};
     width: ${props => props?.width};
     text-align: ${props => props?.textAlign};
@@ -24,6 +27,19 @@ export const InputSyle = css`
     animation-name: ${SpawnAnimation};
     animation-duration: 0.5s;
     animation-iteration-count: 1;
+`;
+
+export const Header = styled.h1`
+    font-size: xx-large;
+    color: darkgreen;
+    text-align: ${props => props?.textAlign};
+`;
+
+export const Description = styled.h3`
+    font-size: ${props => props?.fontSize};
+    margin-top: -10px;
+    color: ${props => props.color};
+    text-align: ${props => props?.textAlign};
 `;
 
 export const Label = styled.label`

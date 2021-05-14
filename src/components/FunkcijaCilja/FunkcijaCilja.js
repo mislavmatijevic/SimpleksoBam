@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Label } from '../../generalStyles/generalStyles';
 import { Container, Input, Select } from './FunkcijaCiljaStyle';
 import { IzvadiBrojeveIzTekstaUPolje, UredanIspisBrojevaIzPolja } from './../../lib/functions/ispisJednadžbi';
+import { PodaciContext } from '../Context/PodaciContext';
 
-const FunkcijaCilja = (props) => {
+const FunkcijaCilja = () => {
+
+    const {
+        setSimpleksSmjer,
+        setVrijednostiFunkcijeCiljaJSON,
+        setPoljeUvjetaJSON,
+    } = useContext(PodaciContext);
 
     const [vrijednostiFunkcijeCilja, setVrijednostiFunkcijeCilja] = useState(null)
     const [funkcijaCilja, setFunkcijaCilja] = useState(null)
@@ -160,16 +167,16 @@ const FunkcijaCilja = (props) => {
             });
 
             if (uvjetiDovršeni) {
-                props.setVrijednostiFunkcijeCiljaJSON(JSON.stringify(vrijednostiFunkcijeCilja));
-                props.setPoljeUvjetaJSON(JSON.stringify(poljeUvjeta));
-                props.setSimpleksSmjer(smjer);
+                setVrijednostiFunkcijeCiljaJSON(JSON.stringify(vrijednostiFunkcijeCilja));
+                setPoljeUvjetaJSON(JSON.stringify(poljeUvjeta));
+                setSimpleksSmjer(smjer);
                 return;
             }
         }
 
-        props.setVrijednostiFunkcijeCiljaJSON(null);
-        props.setPoljeUvjetaJSON(null);
-        props.setSimpleksSmjer(null);
+        setVrijednostiFunkcijeCiljaJSON(null);
+        setPoljeUvjetaJSON(null);
+        setSimpleksSmjer(null);
 
     }, [poljeUvjeta, smjer, vrijednostiFunkcijeCilja])
 

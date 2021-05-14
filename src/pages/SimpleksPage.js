@@ -1,30 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
+
+// Components
 import FunkcijaCilja from '../components/FunkcijaCilja/FunkcijaCilja'
 import Main from '../components/Main/Main'
 import SimpleksTablica from '../components/SimpleksTablica/SimpleksTablica'
-import { Label } from '../generalStyles/generalStyles'
+
+// Functions
 import { IzradiKanonski } from '../lib/functions/ispisJednadžbi'
+import { PodaciContext } from '../components/Context/PodaciContext'
+
+// Styles
+import {
+    Label,
+    Header,
+    Description
+} from '../generalStyles/generalStyles'
+import KanonskiOblik from '../components/KanonskiOblik/KanonskiOblik'
 
 const SimpleksPage = () => {
 
-    const [simpleksSmjer, setSimpleksSmjer] = useState(null)
-    const [vrijednostiFunkcijeCiljaJSON, setVrijednostiFunkcijeCiljaJSON] = useState(null)
-    const [poljeUvjetaJSON, setPoljeUvjetaJSON] = useState(null)
+    const {
+        poljeUvjetaJSON
+    } = useContext(PodaciContext);
 
     return (
         <Main>
+            <Header textAlign="center">Simplekso-Bam</Header>
+            <Description textAlign="center" fontSize="larger" color="green">Bam! I simpleksica nastaje!</Description>
+            <Description textAlign="right" fontSize="small">Mislav Matijević, svibanj 2021.</Description>
 
-            <FunkcijaCilja setVrijednostiFunkcijeCiljaJSON={setVrijednostiFunkcijeCiljaJSON} setPoljeUvjetaJSON={setPoljeUvjetaJSON} setSimpleksSmjer={setSimpleksSmjer} />
+            <FunkcijaCilja />
 
-            {poljeUvjetaJSON &&
+            {poljeUvjetaJSON?.length > 0 &&
                 <>
-                    <Label display="block" color="blue">Kanonski oblik:</Label>
-                    {IzradiKanonski(poljeUvjetaJSON).map((value, index) => {
-                        return (
-                            <Label display="block" color="blue">{value.lijevaStranaUvjeta} {value.ograničenjeUvjeta} {value.desnaStranaUvjeta}</Label>
-                            )
-                    })
-                    }
+                    <KanonskiOblik />
                     <SimpleksTablica />
                 </>
             }
