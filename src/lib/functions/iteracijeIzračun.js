@@ -31,6 +31,8 @@ ZjCj {
     []
 }
  */
+var najranijiRedakIdućeDopunske;
+var najranijiRedakIdućeArtificijalne;
 
 function IzračunajStupacPrveTablice({
     nazivStupca,
@@ -43,7 +45,8 @@ function IzračunajStupacPrveTablice({
 }) {
 
     const poljeVrijednostiNovogaStupca = [];
-    let indexZadnjeDopunske = -1;
+    var većUpisanaDopunska = false;
+    var većUpisanaArtificijalne = false;
 
     for (let index = 0; index < brojOgraničenja; index++) {
         switch (nazivStupca) {
@@ -67,37 +70,26 @@ function IzračunajStupacPrveTablice({
                         poljeVrijednostiNovogaStupca.push(parseInt(poljeUvjeta[index]["lijevaStranaUvjeta"][parseInt(nazivStupca.substring(1)) - 1]));
                         break;
                     case 'u':
-                        if (poljeUvjeta[index]["ograničenjeUvjeta"] === "≤") {
-                            if (indexZadnjeDopunske <= index) {
-                                poljeVrijednostiNovogaStupca.push(0);
-                            } else {
-                                indexZadnjeDopunske = index;
-                                poljeVrijednostiNovogaStupca.push(1);
-                            }
-                        } else if (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
-                            if (indexZadnjeDopunske <= index) {
-                                poljeVrijednostiNovogaStupca.push(0);
-                            } else {
-                                indexZadnjeDopunske = index;
-                                poljeVrijednostiNovogaStupca.push(-1);
-                            }
+
+                        if (većUpisanaDopunska || najranijiRedakIdućeDopunske > index || poljeUvjeta[index]["ograničenjeUvjeta"] === "=") {
+                            poljeVrijednostiNovogaStupca.push(0);
+                        } else {                            
+                            poljeVrijednostiNovogaStupca.push(poljeUvjeta[index]["ograničenjeUvjeta"] === "≤" ? 1 : -1);
+                            većUpisanaDopunska = true;
+                            najranijiRedakIdućeDopunske = index+1;
                         }
+
+                        break;
                     case 'w':
-                        if (poljeUvjeta[index]["ograničenjeUvjeta"] === "=") {
-                            if (indexZadnjeDopunske <= index) {
-                                poljeVrijednostiNovogaStupca.push(0);
-                            } else {
-                                indexZadnjeDopunske = index;
-                                poljeVrijednostiNovogaStupca.push(1);
-                            }
-                        } else if (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
-                            if (indexZadnjeDopunske <= index) {
-                                poljeVrijednostiNovogaStupca.push(0);
-                            } else {
-                                indexZadnjeDopunske = index;
-                                poljeVrijednostiNovogaStupca.push(1);
-                            }
+
+                        if (većUpisanaArtificijalne || najranijiRedakIdućeArtificijalne > index || poljeUvjeta[index]["ograničenjeUvjeta"] === "≤") {
+                            poljeVrijednostiNovogaStupca.push(0);
+                        } else {                            
+                            poljeVrijednostiNovogaStupca.push(1);
+                            većUpisanaArtificijalne = true;
+                            najranijiRedakIdućeArtificijalne = index+1;
                         }
+
                         break;
                 }
                 break;
@@ -108,6 +100,10 @@ function IzračunajStupacPrveTablice({
 }
 
 export function ParsirajStupceURetke(stupci) {
+
+    najranijiRedakIdućeDopunske = 0;
+    najranijiRedakIdućeArtificijalne = 0;
+
     let brojRedova = stupci[0]["VrijednostiStupca"].length;
     let poljeRedaka = [];
 
