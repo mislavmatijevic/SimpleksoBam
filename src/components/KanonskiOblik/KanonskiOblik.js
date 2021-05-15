@@ -10,7 +10,7 @@ const KanonskiOblik = () => {
         poljeNepoznanica,
         setBrojVarijabli,
         setBrojOgraničenja,
-        setPoljeStupacaVarijabli,
+        setPoljeNazivaVarijabli,
         poljeKanonskihUvjeta,
         setPoljeKanonskihUvjeta
     } = useContext(PodaciContext);
@@ -81,19 +81,19 @@ const KanonskiOblik = () => {
         setBrojOgraničenja(lokalniKanonski.length);
         setBrojVarijabli(brojacVarijabli);
 
-        setPoljeStupacaVarijabli(lokalneVarijable);
+        setPoljeNazivaVarijabli(lokalneVarijable);
         setPoljeKanonskihUvjeta(lokalniKanonski);
 
-    }, [poljeUvjetaJSON])
+    }, [poljeUvjetaJSON, setBrojOgraničenja, setBrojVarijabli, setPoljeKanonskihUvjeta, setPoljeNazivaVarijabli]);
 
     return (
         <>
             {poljeKanonskihUvjeta?.length > 0 &&
                 <>
                     <Label display="block" color="blue">Kanonski oblik:</Label>
-                    {poljeKanonskihUvjeta.map(value => {
+                    {poljeKanonskihUvjeta.map((value, index) => {
                         return (
-                            <Label display="block" color="blue">{value.lijevaStranaUvjeta} {value.ograničenjeUvjeta} {value.desnaStranaUvjeta}</Label>
+                            <Label key={index} display="block" color="blue">{value.lijevaStranaUvjeta} {value.ograničenjeUvjeta} {value.desnaStranaUvjeta}</Label>
                         )
                     })
                     }

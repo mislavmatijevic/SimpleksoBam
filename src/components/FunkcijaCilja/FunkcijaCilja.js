@@ -156,6 +156,10 @@ const FunkcijaCilja = () => {
         ParsirajUvjet(indexUvjeta);
     }
 
+    const uvjetPotpun = (uvjet) => {
+        return (uvjet["lijevaStranaUvjeta"]?.length === vrijednostiFunkcijeCilja.length && uvjet["ograničenjeUvjeta"] && uvjet["ograničenjeUvjeta"] !== nepoznataVrijednost && uvjet["desnaStranaUvjeta"])
+    }
+
     // Pretvori uvjet u string koji je prava matematička nejednadžba.
     useEffect(() => {
         if (poljeUvjeta.length > 0) {
@@ -178,18 +182,15 @@ const FunkcijaCilja = () => {
         setPoljeUvjetaJSON(null);
         setSimpleksSmjer(null);
 
-    }, [poljeUvjeta, smjer, vrijednostiFunkcijeCilja])
+    }, [poljeUvjeta, smjer, vrijednostiFunkcijeCilja, setPoljeUvjetaJSON, setSimpleksSmjer, setVrijednostiFunkcijeCiljaJSON])
 
-    function uvjetPotpun(uvjet) {
-        return (uvjet["lijevaStranaUvjeta"]?.length === vrijednostiFunkcijeCilja.length && uvjet["ograničenjeUvjeta"] && uvjet["ograničenjeUvjeta"] !== nepoznataVrijednost && uvjet["desnaStranaUvjeta"])
-    }
-
-    function odrediSmjer(values) {
-        if (values === nepoznataVrijednost) {
+    function odrediSmjer (value) {
+        if (value === nepoznataVrijednost) {
             setSmjer(null);
             setPoljeUvjeta([]);
         } else {
-            setSmjer(values);
+            setSmjer(value);
+            setSimpleksSmjer(value);
         }
     }
 

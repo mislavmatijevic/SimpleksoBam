@@ -11,7 +11,6 @@ import { PodaciContext } from '../components/Context/PodaciContext'
 
 // Styles
 import {
-    Label,
     Header,
     Description
 } from '../generalStyles/generalStyles'

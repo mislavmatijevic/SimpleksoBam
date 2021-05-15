@@ -1,53 +1,68 @@
-import React, { useState, useEffect } from 'react'
-import { SimpleksTablicaStyle } from './SimpleksTablicaStyle';
-import { IzračunajPočetnuTablicu, IzračunajSljedećuIteraciju } from '../../lib/functions/iteracijeIzračun';
+import React, { useState, useEffect, useContext } from 'react'
+import { SimpleksTablicaStyle, TableD, TableRow } from './SimpleksTablicaStyle';
+import { IzračunajPočetnuTablicu } from '../../lib/functions/iteracijeIzračun';
+import { PodaciContext } from '../Context/PodaciContext'
 
-const SimpleksTablica = (props) => {
+const SimpleksTablica = () => {
 
-    const [prvaIteracija, setPrvaIteracija] = useState(null);
-    const [iteracije, setIteracije] = useState(null);
-    const smjer = props.smjer;
+    const [početnaTablica, setPočetnaTablica] = useState(null)
+
+    const {
+        poljeUvjetaJSON,
+        vrijednostiFunkcijeCiljaJSON,
+        simpleksSmjer,
+        poljeNazivaVarijabli,
+        brojVarijabli,
+        brojOgraničenja,
+    } = useContext(PodaciContext);
 
     useEffect(() => {
-        setPrvaIteracija(IzračunajPočetnuTablicu(props.nepoznanice));
-    }, [props]);
+        setPočetnaTablica(IzračunajPočetnuTablicu({
+            brojVarijabli: brojVarijabli,
+            brojOgraničenja: brojOgraničenja,
+            naziviVarijabli: poljeNazivaVarijabli,
+            funkcijaCilja: JSON.parse(vrijednostiFunkcijeCiljaJSON),
+            poljeUvjeta: JSON.parse(poljeUvjetaJSON),
+            smjer: simpleksSmjer
+        }));
+        console.log("Poč tab:");
+        console.log(početnaTablica);
+    }, [poljeUvjetaJSON, simpleksSmjer, vrijednostiFunkcijeCiljaJSON]);
 
     return (
         <>
-            <SimpleksTablicaStyle>
-                <caption>Početna tablica</caption>
-                <thead>
-                    <tr>
-                        <th>Cj</th>
-                        <th>Var</th>
-                        <th>Kol</th>
-                        <th>x1</th>
-                        <th>x2</th>
-                        <th>x3</th>
-                        <th>R</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>20</td>
-                        <td>x1</td>
-                        <td>125</td>
-                        <td>5</td>
-                        <td>7</td>
-                        <td>3</td>
-                        <td>163</td>
-                    </tr>
-                    <tr>
-                        <td>20</td>
-                        <td>x2</td>
-                        <td>125</td>
-                        <td>5</td>
-                        <td>7</td>
-                        <td>3</td>
-                        <td>163</td>
-                    </tr>
-                </tbody>
-            </SimpleksTablicaStyle>
+            { početnaTablica &&
+                <SimpleksTablicaStyle key={1}>
+                    <caption>Početna tablica</caption>
+                    <thead>
+                        <tr>
+                            <th>Cj</th>
+                            <th>Var</th>
+                            <th>Kol</th>
+                            {
+                                poljeNazivaVarijabli.map((value, index) => {
+                                    return (<th key={index}>{value}</th>)
+                                })
+                            }
+                            <th>R</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            početnaTablica.map((value, index) => {
+                                return (
+                                    <TableRow>
+                                        {value.VrijednostiStupca.map((innerValue, innerIndex) => {
+                                            return (<TableRow>{value.VrijednostiStupca[innerIndex]}</TableRow>)
+                                        })}
+                                    </TableRow>
+                                )
+                            })
+                        }
+                    </tbody>
+                </SimpleksTablicaStyle>
+
+            }
         </>
     )
 }
