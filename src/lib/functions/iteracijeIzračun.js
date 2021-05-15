@@ -42,7 +42,7 @@ function IzračunajStupacPrveTablice({
     smjer
 }) {
 
-    let poljeVrijednostiNovogaStupca = [];
+    const poljeVrijednostiNovogaStupca = [];
     let indexZadnjeDopunske = -1;
 
     for (let index = 0; index < brojOgraničenja; index++) {
@@ -52,7 +52,7 @@ function IzračunajStupacPrveTablice({
                 break;
             case "Var":
                 for (let index = 0; index < naziviVarijabli.length; index++) {
-                    if (naziviVarijabli[index][0] !== "x") poljeVrijednostiNovogaStupca.push(naziviVarijabli[index]); // TO DO ubaciti uvjet koji provjerava predznak
+                    if (naziviVarijabli[index][0] !== "x" && poljeVrijednostiNovogaStupca.length < 3) poljeVrijednostiNovogaStupca.push(naziviVarijabli[index]); // TO DO ubaciti uvjet koji provjerava predznak
                 }
                 break;
             case "Kol":
@@ -74,7 +74,7 @@ function IzračunajStupacPrveTablice({
                                 indexZadnjeDopunske = index;
                                 poljeVrijednostiNovogaStupca.push(1);
                             }
-                        } else if  (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
+                        } else if (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
                             if (indexZadnjeDopunske <= index) {
                                 poljeVrijednostiNovogaStupca.push(0);
                             } else {
@@ -90,7 +90,7 @@ function IzračunajStupacPrveTablice({
                                 indexZadnjeDopunske = index;
                                 poljeVrijednostiNovogaStupca.push(1);
                             }
-                        } else if  (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
+                        } else if (poljeUvjeta[index]["ograničenjeUvjeta"] === "≥") {
                             if (indexZadnjeDopunske <= index) {
                                 poljeVrijednostiNovogaStupca.push(0);
                             } else {
@@ -104,14 +104,30 @@ function IzračunajStupacPrveTablice({
         }
     }
 
-    return { Stupac: nazivStupca, VrijednostiStupca: poljeVrijednostiNovogaStupca };
+    return { Stupac: nazivStupca, VrijednostiStupca: [...poljeVrijednostiNovogaStupca] };
+}
+
+export function ParsirajStupceURetke(stupci) {
+    let brojRedova = stupci[0]["VrijednostiStupca"].length;
+    let poljeRedaka = [];
+
+    for (let index = 0; index < brojRedova; index++) {
+
+        let redak = [];
+
+        stupci.forEach((stupac) => {
+            redak.push(stupac["VrijednostiStupca"][index]);
+        });
+
+        poljeRedaka.push(redak);
+    }
+
+    return poljeRedaka;
 }
 
 export function IzračunajPočetnuTablicu(argumenti) {
 
-    console.log(argumenti);
-
-    let vrijednostiStupaca = [];
+    var vrijednostiStupaca = [];
     vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Cj" }))
     vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Var" }))
     vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Kol" }))
@@ -120,7 +136,7 @@ export function IzračunajPočetnuTablicu(argumenti) {
         vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: argumenti.naziviVarijabli[index] }));
     }
 
-    return vrijednostiStupaca;
+    return ParsirajStupceURetke([...vrijednostiStupaca]);
 }
 
 export function IzračunajSljedećuIteraciju(bivšaSimpleksica, smjer) {

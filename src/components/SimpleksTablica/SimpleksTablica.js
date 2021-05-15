@@ -5,8 +5,6 @@ import { PodaciContext } from '../Context/PodaciContext'
 
 const SimpleksTablica = () => {
 
-    const [početnaTablica, setPočetnaTablica] = useState(null)
-
     const {
         poljeUvjetaJSON,
         vrijednostiFunkcijeCiljaJSON,
@@ -16,22 +14,24 @@ const SimpleksTablica = () => {
         brojOgraničenja,
     } = useContext(PodaciContext);
 
+    const [redoviPočetneTablice, setRedoviPočetneTablice] = useState(null);
+
     useEffect(() => {
-        setPočetnaTablica(IzračunajPočetnuTablicu({
-            brojVarijabli: brojVarijabli,
-            brojOgraničenja: brojOgraničenja,
-            naziviVarijabli: poljeNazivaVarijabli,
-            funkcijaCilja: JSON.parse(vrijednostiFunkcijeCiljaJSON),
-            poljeUvjeta: JSON.parse(poljeUvjetaJSON),
-            smjer: simpleksSmjer
-        }));
-        console.log("Poč tab:");
-        console.log(početnaTablica);
-    }, [poljeUvjetaJSON, simpleksSmjer, vrijednostiFunkcijeCiljaJSON]);
+        if (poljeUvjetaJSON?.length > 0) {
+            setRedoviPočetneTablice([...IzračunajPočetnuTablicu({
+                brojVarijabli: brojVarijabli,
+                brojOgraničenja: brojOgraničenja,
+                naziviVarijabli: poljeNazivaVarijabli,
+                funkcijaCilja: JSON.parse(vrijednostiFunkcijeCiljaJSON),
+                poljeUvjeta: JSON.parse(poljeUvjetaJSON),
+                smjer: simpleksSmjer
+            })]);
+        }
+    }, [brojVarijabli, brojOgraničenja, poljeNazivaVarijabli, vrijednostiFunkcijeCiljaJSON, poljeUvjetaJSON, simpleksSmjer]);
 
     return (
         <>
-            { početnaTablica &&
+            { redoviPočetneTablice &&
                 <SimpleksTablicaStyle key={1}>
                     <caption>Početna tablica</caption>
                     <thead>
@@ -48,17 +48,19 @@ const SimpleksTablica = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            početnaTablica.map((value, index) => {
-                                return (
-                                    <TableRow>
-                                        {value.VrijednostiStupca.map((innerValue, innerIndex) => {
-                                            return (<TableRow>{value.VrijednostiStupca[innerIndex]}</TableRow>)
-                                        })}
-                                    </TableRow>
-                                )
-                            })
-                        }
+                            {
+                                redoviPočetneTablice.map((redak, index) => {
+                                    return (
+                                        <tr>
+                                            {redak.map((value) => {
+                                                return(
+                                                    <td>{value}</td>
+                                                )
+                                            })}
+                                        </tr>
+                                    )
+                                })
+                            }
                     </tbody>
                 </SimpleksTablicaStyle>
 
