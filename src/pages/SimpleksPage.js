@@ -19,7 +19,9 @@ import KanonskiOblik from '../components/KanonskiOblik/KanonskiOblik'
 const SimpleksPage = () => {
 
     const {
-        poljeUvjetaJSON
+        poljeUvjetaJSON,
+        brojVarijabli,
+        brojOgraničenja,
     } = useContext(PodaciContext);
 
     return (
@@ -33,7 +35,9 @@ const SimpleksPage = () => {
             {poljeUvjetaJSON?.length > 0 &&
                 <>
                     <KanonskiOblik />
-                    <SimpleksTablica />
+                    {brojVarijabli > 0 && brojOgraničenja > 0 &&
+                        <SimpleksTablica />
+                    }                    
                 </>
             }
         </Main>

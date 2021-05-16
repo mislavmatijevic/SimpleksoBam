@@ -41,33 +41,61 @@ function IzračunajStupacPrveTablice({
     naziviVarijabli,
     funkcijaCilja,
     poljeUvjeta,
-    smjer
+    smjer,
+    VARStupac
 }) {
 
-    const poljeVrijednostiNovogaStupca = [];
+    var poljeVrijednostiNovogaStupca = [];
     var većUpisanaDopunska = false;
     var većUpisanaArtificijalne = false;
+    let mogućeVarijable = naziviVarijabli.filter(slovo => slovo[0] !== 'x');
 
     for (let index = 0; index < brojOgraničenja; index++) {
         switch (nazivStupca) {
             case "Cj":
-                poljeVrijednostiNovogaStupca.push(0);
+
+                if (VARStupac["VrijednostiStupca"][index][0] === "u") {
+                    poljeVrijednostiNovogaStupca.push(0);
+                }
+                else if (VARStupac["VrijednostiStupca"][index][0] === "w") {
+                    poljeVrijednostiNovogaStupca.push(smjer === "max" ? "M" : "-M");
+                }
+
                 break;
             case "Var":
-                for (let index = 0; index < naziviVarijabli.length; index++) {
-                    if (naziviVarijabli[index][0] !== "x" && poljeVrijednostiNovogaStupca.length < 3) poljeVrijednostiNovogaStupca.push(naziviVarijabli[index]); // TO DO ubaciti uvjet koji provjerava predznak
+
+                if (mogućeVarijable[index][0] === 'w') {
+                    poljeVrijednostiNovogaStupca.push(mogućeVarijable[index]);
                 }
+                else if (mogućeVarijable[index][0] === 'u') {
+                    if (poljeUvjeta[index]["ograničenjeUvjeta"] !== "≥") {
+                        poljeVrijednostiNovogaStupca.push(mogućeVarijable[index]);
+                    }
+                    else {
+                        mogućeVarijable.shift();
+                        index--;
+                    }
+                }
+
                 break;
             case "Kol":
+
                 poljeVrijednostiNovogaStupca.push(parseInt(poljeUvjeta[index]["desnaStranaUvjeta"]));
+
                 break;
             case "R":
+
                 poljeVrijednostiNovogaStupca.push(0);
+
                 break;
             default:
+
                 switch (nazivStupca[0]) {
+
                     case 'x':
+
                         poljeVrijednostiNovogaStupca.push(parseInt(poljeUvjeta[index]["lijevaStranaUvjeta"][parseInt(nazivStupca.substring(1)) - 1]));
+
                         break;
                     case 'u':
 
@@ -91,7 +119,9 @@ function IzračunajStupacPrveTablice({
                         }
 
                         break;
+
                 }
+
                 break;
         }
     }
@@ -124,9 +154,10 @@ export function ParsirajStupceURetke(stupci) {
 export function IzračunajPočetnuTablicu(argumenti) {
 
     var vrijednostiStupaca = [];
-    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Cj" }))
-    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Var" }))
-    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Kol" }))
+    var VarStupac = IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Var" });
+    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Cj", VARStupac: {...VarStupac}}));
+    vrijednostiStupaca.push(VarStupac);
+    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Kol" }));
 
     for (let index = 0; index < argumenti.brojVarijabli; index++) {
         vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: argumenti.naziviVarijabli[index] }));

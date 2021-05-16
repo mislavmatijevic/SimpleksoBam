@@ -8,11 +8,13 @@ const KanonskiOblik = () => {
     const {
         poljeUvjetaJSON,
         poljeNepoznanica,
-        setBrojVarijabli,
-        setBrojOgraničenja,
         setPoljeNazivaVarijabli,
         poljeKanonskihUvjeta,
-        setPoljeKanonskihUvjeta
+        setPoljeKanonskihUvjeta,
+        setBrojVarijabli,
+        setBrojOgraničenja,
+        brojOgraničenja,
+        brojVarijabli
     } = useContext(PodaciContext);
 
     const [uvjetiNenegativnosti, setUvjetiNenegativnosti] = useState([])
@@ -78,13 +80,14 @@ const KanonskiOblik = () => {
         lokalniUvjetiNenegativnosti.push(<span> ≥ 0</span>);
         setUvjetiNenegativnosti([...lokalniUvjetiNenegativnosti]);
 
-        setBrojOgraničenja(lokalniKanonski.length);
-        setBrojVarijabli(brojacVarijabli);
-
         setPoljeNazivaVarijabli(lokalneVarijable);
         setPoljeKanonskihUvjeta(lokalniKanonski);
 
-    }, [poljeUvjetaJSON, setBrojOgraničenja, setBrojVarijabli, setPoljeKanonskihUvjeta, setPoljeNazivaVarijabli]);
+        // Bitno da su ispod ostalih settera jer se jedino njih gleda prilikom updatea simpleksice!
+        setBrojOgraničenja(lokalniKanonski.length);
+        setBrojVarijabli(brojacVarijabli);
+
+    }, [poljeUvjetaJSON, brojOgraničenja, brojVarijabli, setBrojOgraničenja, setBrojVarijabli, setPoljeKanonskihUvjeta, setPoljeNazivaVarijabli]);
 
     return (
         <>

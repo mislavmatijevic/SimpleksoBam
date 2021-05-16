@@ -10,6 +10,8 @@ const FunkcijaCilja = () => {
         setSimpleksSmjer,
         setVrijednostiFunkcijeCiljaJSON,
         setPoljeUvjetaJSON,
+        setBrojVarijabli,
+        setBrojOgraničenja
     } = useContext(PodaciContext);
 
     const [vrijednostiFunkcijeCilja, setVrijednostiFunkcijeCilja] = useState(null)
@@ -125,6 +127,9 @@ const FunkcijaCilja = () => {
     }
 
     function odrediUvjet(indexUvjeta, dioUvjeta, vrijednost) {
+
+        setPoljeUvjeta([]);
+
         let novaVrijednostDijela = null;
         let promijenjenoStanjeJednadžbi = poljeUvjeta;
 
@@ -162,6 +167,10 @@ const FunkcijaCilja = () => {
 
     // Pretvori uvjet u string koji je prava matematička nejednadžba.
     useEffect(() => {
+        
+        setBrojVarijabli(null);
+        setBrojOgraničenja(null);
+
         if (poljeUvjeta.length > 0) {
             let uvjetiDovršeni = true;
             poljeUvjeta.forEach((value) => {
