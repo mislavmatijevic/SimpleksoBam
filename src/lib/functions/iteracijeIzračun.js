@@ -133,14 +133,29 @@ function IzračunajStupacPrveTablice({
             broj *= -1;
         }
         poljeVrijednostiNovogaStupca.push(broj);
-    } else if (nazivStupca == 'Cj') {
+    }  else if (nazivStupca == 'Cj') {
         let ispis = <strong>Zj-Cj</strong>;
         poljeVrijednostiNovogaStupca.push(ispis);
         ispis = <strong>dj</strong>;
         poljeVrijednostiNovogaStupca.push(ispis);
-    } else if (nazivStupca != 'Var') {
+    } else if (nazivStupca != 'Var' ) {
         poljeVrijednostiNovogaStupca.push(0);
     }
+
+    if (nazivStupca != 'Cj' && nazivStupca != 'Var') {        
+        let zbrojZaDjRedak = 0;
+        poljeUvjeta.forEach((uvjeti, index) => {
+            if (uvjeti["ograničenjeUvjeta"] !== '≤') {
+                zbrojZaDjRedak += poljeVrijednostiNovogaStupca[index];
+            }
+        });
+        if (smjer == "max") {
+            zbrojZaDjRedak *= -1;
+        }
+        poljeVrijednostiNovogaStupca.push(zbrojZaDjRedak);
+    }
+
+
 
     return { Stupac: nazivStupca, VrijednostiStupca: [...poljeVrijednostiNovogaStupca] };
 }
