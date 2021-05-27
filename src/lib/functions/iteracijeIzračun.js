@@ -125,24 +125,24 @@ function IzračunajStupacPrveTablice({
                 break;
         }
     }
-    
+
     /* Zj-Cj redak */
     if (nazivStupca[0] == 'x') {
-        let broj = funkcijaCilja[parseInt(nazivStupca[1])-1];
+        let broj = funkcijaCilja[parseInt(nazivStupca[1]) - 1];
         if (smjer == "max") {
             broj *= -1;
         }
         poljeVrijednostiNovogaStupca.push(broj);
-    }  else if (nazivStupca == 'Cj') {
-        let ispis = <strong>Zj-Cj</strong>;
-        poljeVrijednostiNovogaStupca.push(ispis);
-        ispis = <strong>dj</strong>;
-        poljeVrijednostiNovogaStupca.push(ispis);
-    } else if (nazivStupca != 'Var' ) {
+    } else if (nazivStupca == 'Cj') {
+        poljeVrijednostiNovogaStupca.push("zjcj");
+        poljeVrijednostiNovogaStupca.push("dj");
+    } else if (nazivStupca != 'Var') {
         poljeVrijednostiNovogaStupca.push(0);
+    } else if (nazivStupca == 'Var') {
+        poljeVrijednostiNovogaStupca.push(null, null);
     }
 
-    if (nazivStupca != 'Cj' && nazivStupca != 'Var') {        
+    if (nazivStupca != 'Cj' && nazivStupca != 'Var') {
         let zbrojZaDjRedak = 0;
         poljeUvjeta.forEach((uvjeti, index) => {
             if (uvjeti["ograničenjeUvjeta"] !== '≤') {
@@ -153,8 +153,9 @@ function IzračunajStupacPrveTablice({
             zbrojZaDjRedak *= -1;
         }
         poljeVrijednostiNovogaStupca.push(zbrojZaDjRedak);
+    } else if (nazivStupca == 'Var') {
+        poljeVrijednostiNovogaStupca.push(null, null);
     }
-
 
 
     return { Stupac: nazivStupca, VrijednostiStupca: [...poljeVrijednostiNovogaStupca] };
@@ -200,6 +201,8 @@ export function IzračunajPočetnuTablicu(argumenti) {
     for (let index = 0; index < argumenti.brojVarijabli; index++) {
         vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: argumenti.naziviVarijabli[index] }));
     }
+
+    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "R" }));
 
     return ParsirajStupceURetke([...vrijednostiStupaca]);
 }

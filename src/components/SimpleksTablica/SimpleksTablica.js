@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { SimpleksTablicaStyle, TableD, TableRow } from './SimpleksTablicaStyle';
+import {
+    TablicaStyle,
+    TablicaCaption,
+    TablicaHead,
+    TablicaBody,
+    Tr,
+    Th,
+    Td,
+    Td2Cols
+} from './SimpleksTablicaStyle';
 import { IzračunajPočetnuTablicu } from '../../lib/functions/iteracijeIzračun';
 import { PodaciContext } from '../Context/PodaciContext'
 
@@ -32,37 +41,43 @@ const SimpleksTablica = () => {
     return (
         <>
             { redoviPočetneTablice &&
-                <SimpleksTablicaStyle key={1}>
-                    <caption>Početna tablica</caption>
-                    <thead>
-                        <tr>
-                            <th>Cj</th>
-                            <th>Var</th>
-                            <th>Kol</th>
+                <TablicaStyle key={1}>
+                    <TablicaCaption>Početna tablica</TablicaCaption>
+                    <TablicaHead>
+                        <Tr>
+                            <Th>Cj</Th>
+                            <Th>Var</Th>
+                            <Th>Kol</Th>
                             {
                                 poljeNazivaVarijabli.map((value, index) => {
-                                    return (<th key={index}>{value}</th>)
+                                    return (<Th key={index}>{value}</Th>)
                                 })
                             }
-                            <th>R</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                            {
-                                redoviPočetneTablice.map((redak, index) => {
-                                    return (
-                                        <tr>
-                                            {redak.map((value, index) => {
-                                                return(
-                                                    <td>{value}</td>
-                                                )
-                                            })}
-                                        </tr>
-                                    )
-                                })
-                            }
-                    </tbody>
-                </SimpleksTablicaStyle>
+                            <Th>R</Th>
+                        </Tr>
+                    </TablicaHead>
+                    <TablicaBody>
+                        {
+                            redoviPočetneTablice.map((redak, index) => {
+                                return (
+                                    <Tr key={index}>
+                                        {redak.map((value, index) => {
+                                            if (value == "zjcj") {
+                                                return (<Td2Cols colSpan="2"><strong>Zj-Cj</strong></Td2Cols>);
+                                            } else if (value == "dj") {
+                                                return (<Td2Cols colSpan="2"><strong>dj</strong></Td2Cols>);
+                                            } else if (value === null) {
+                                                return;
+                                            } else return (
+                                                <Td>{value}</Td>
+                                            )
+                                        })}
+                                    </Tr>
+                                )
+                            })
+                        }
+                    </TablicaBody>
+                </TablicaStyle>
 
             }
         </>
