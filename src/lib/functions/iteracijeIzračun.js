@@ -58,7 +58,7 @@ function IzračunajStupacPrveTablice({
                     poljeVrijednostiNovogaStupca.push(0);
                 }
                 else if (VARStupac["VrijednostiStupca"][index][0] === "w") {
-                    poljeVrijednostiNovogaStupca.push(smjer === "max" ? "M" : "-M");
+                    poljeVrijednostiNovogaStupca.push(smjer === "max" ? "-M" : "M");
                 }
 
                 break;
@@ -101,10 +101,10 @@ function IzračunajStupacPrveTablice({
 
                         if (većUpisanaDopunska || najranijiRedakIdućeDopunske > index || poljeUvjeta[index]["ograničenjeUvjeta"] === "=") {
                             poljeVrijednostiNovogaStupca.push(0);
-                        } else {                            
+                        } else {
                             poljeVrijednostiNovogaStupca.push(poljeUvjeta[index]["ograničenjeUvjeta"] === "≤" ? 1 : -1);
                             većUpisanaDopunska = true;
-                            najranijiRedakIdućeDopunske = index+1;
+                            najranijiRedakIdućeDopunske = index + 1;
                         }
 
                         break;
@@ -112,10 +112,10 @@ function IzračunajStupacPrveTablice({
 
                         if (većUpisanaArtificijalne || najranijiRedakIdućeArtificijalne > index || poljeUvjeta[index]["ograničenjeUvjeta"] === "≤") {
                             poljeVrijednostiNovogaStupca.push(0);
-                        } else {                            
+                        } else {
                             poljeVrijednostiNovogaStupca.push(1);
                             većUpisanaArtificijalne = true;
-                            najranijiRedakIdućeArtificijalne = index+1;
+                            najranijiRedakIdućeArtificijalne = index + 1;
                         }
 
                         break;
@@ -124,6 +124,22 @@ function IzračunajStupacPrveTablice({
 
                 break;
         }
+    }
+    
+    /* Zj-Cj redak */
+    if (nazivStupca[0] == 'x') {
+        let broj = funkcijaCilja[parseInt(nazivStupca[1])-1];
+        if (smjer == "max") {
+            broj *= -1;
+        }
+        poljeVrijednostiNovogaStupca.push(broj);
+    } else if (nazivStupca == 'Cj') {
+        let ispis = <strong>Zj-Cj</strong>;
+        poljeVrijednostiNovogaStupca.push(ispis);
+        ispis = <strong>dj</strong>;
+        poljeVrijednostiNovogaStupca.push(ispis);
+    } else if (nazivStupca != 'Var') {
+        poljeVrijednostiNovogaStupca.push(0);
     }
 
     return { Stupac: nazivStupca, VrijednostiStupca: [...poljeVrijednostiNovogaStupca] };
@@ -148,6 +164,13 @@ export function ParsirajStupceURetke(stupci) {
         poljeRedaka.push(redak);
     }
 
+    console.log(poljeRedaka);
+
+    /* Izračunaj Zj-Cj redak */
+
+    /* Izračunaj dj redak */
+
+
     return poljeRedaka;
 }
 
@@ -155,7 +178,7 @@ export function IzračunajPočetnuTablicu(argumenti) {
 
     var vrijednostiStupaca = [];
     var VarStupac = IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Var" });
-    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Cj", VARStupac: {...VarStupac}}));
+    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Cj", VARStupac: { ...VarStupac } }));
     vrijednostiStupaca.push(VarStupac);
     vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "Kol" }));
 

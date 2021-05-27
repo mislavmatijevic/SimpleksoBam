@@ -52,7 +52,7 @@ const SimpleksTablica = () => {
                                 redoviPočetneTablice.map((redak, index) => {
                                     return (
                                         <tr>
-                                            {redak.map((value) => {
+                                            {redak.map((value, index) => {
                                                 return(
                                                     <td>{value}</td>
                                                 )
