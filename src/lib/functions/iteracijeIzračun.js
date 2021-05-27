@@ -1,5 +1,6 @@
 /*
 15 45 25
+max
 
 2
 
@@ -33,10 +34,10 @@ ZjCj {
  */
 var najranijiRedakIdućeDopunske;
 var najranijiRedakIdućeArtificijalne;
+var riješeno = false;
 
 function IzračunajStupacPrveTablice({
     nazivStupca,
-    brojVarijabli,
     brojOgraničenja,
     naziviVarijabli,
     funkcijaCilja,
@@ -83,24 +84,25 @@ function IzračunajStupacPrveTablice({
                 poljeVrijednostiNovogaStupca.push(parseInt(poljeUvjeta[index]["desnaStranaUvjeta"]));
 
                 break;
-            case "R":
-
-                poljeVrijednostiNovogaStupca.push(0);
-
-                break;
             default:
 
                 switch (nazivStupca[0]) {
 
                     case 'x':
 
-                        poljeVrijednostiNovogaStupca.push(parseInt(poljeUvjeta[index]["lijevaStranaUvjeta"][parseInt(nazivStupca.substring(1)) - 1]));
+                        poljeVrijednostiNovogaStupca.push(
+                            parseInt(poljeUvjeta[index]["lijevaStranaUvjeta"][parseInt(nazivStupca.substring(1)) - 1])
+                        );
 
                         break;
                     case 'u':
 
-                        if (većUpisanaDopunska || najranijiRedakIdućeDopunske > index || poljeUvjeta[index]["ograničenjeUvjeta"] === "=") {
+                        if (većUpisanaDopunska ||
+                            najranijiRedakIdućeDopunske > index ||
+                            poljeUvjeta[index]["ograničenjeUvjeta"] === "=") {
+
                             poljeVrijednostiNovogaStupca.push(0);
+
                         } else {
                             poljeVrijednostiNovogaStupca.push(poljeUvjeta[index]["ograničenjeUvjeta"] === "≤" ? 1 : -1);
                             većUpisanaDopunska = true;
@@ -182,12 +184,136 @@ export function ParsirajStupceURetke(stupci) {
 
     console.log(poljeRedaka);
 
-    /* Izračunaj Zj-Cj redak */
-
-    /* Izračunaj dj redak */
-
-
     return poljeRedaka;
+}
+
+// TODO: degeneracija!
+
+function IzračunajStupacR(stupci, retci, smjer, brojVarijabli) {
+
+    stupci[stupci.length].push({Stupac: "R", Array});
+
+    let indeksVodećegStupca = -1;
+    let indeksVodećegRetka = -1;
+
+    var djRed = retci.filter(redak => redak[0] == "dj")[0];
+    var zjcjRed = retci.filter(redak => redak[0] == "zjcj")[0];
+
+    var KoličinaStupac = stupci.filter(stupac => stupac.Stupac == "Kol")[0];
+
+    let minBroj = 0;
+
+    djRed.forEach((broj, index) => {
+        // Traži određeni broj u dj redu za odabir vodećeg stupca:
+        if ((smjer == "max" && broj < 0 && Math.abs(broj) > minBroj) ||
+            (smjer == "min" && broj > minBroj)) {
+            minBroj = broj;
+            indeksVodećegStupca = index;
+            // ILI ako su dva broja ista:
+        } else if ((smjer == "max" && broj != 0 && Math.abs(broj) == minBroj) ||
+            (smjer == "min" && broj > minBroj)) {
+            minBroj = broj;
+            indeksVodećegStupca = index;
+        }
+    });
+
+    if (minBroj == 0) {
+        zjcjRed.forEach((broj, index) => {
+            if ((smjer == "max" && broj < 0 && Math.abs(broj) > minBroj) ||
+                smjer == "min" && broj > minBroj) {
+                minBroj = broj;
+                indeksVodećegStupca = index;
+            }
+        });
+    }
+
+    if (indeksVodećegStupca == -1) return false;
+
+    // Postoji vodeći stupac!
+
+    let indexRstupca = stupci.length - 1; // Koristi se za pristupanje R stupcu u trenutnoj tablici.
+
+    var postojiDegeneracija = false;
+    var indexiRedovaDegeneriranih = [];
+
+    let najmanjiKoličnik = -Infinity; // Traženje najmanjeg R-a i otkrivanje degeneracija.
+    let indexNajmanjegKoličnika = -1;
+
+    stupci[indeksVodećegStupca].forEach((element, indexOvogRetka) => {
+        if (element <= 0) {
+            stupci[indexRstupca].push(null); // Ne dijelimo s nulom ili neg.
+        }
+        else {
+            let količnik = KoličinaStupac[indexOvogRetka] / element;
+            let indexMogućeDegeneracije = stupci[indexRstupca].indexOf(količnik);
+            if (indexMogućeDegeneracije !== -1) { // Degeneracija!
+
+                // Zapamti indexe ovih degeneriranih redaka za kasnije (ako već nisi).
+                if (indexiRedovaDegeneriranih.indexOf(indexMogućeDegeneracije) == -1) {
+                    indexiRedovaDegeneriranih.push(indexMogućeDegeneracije);
+                }
+                if (indexiRedovaDegeneriranih.indexOf(indexOvogRetka) == -1) {
+                    indexiRedovaDegeneriranih.push(indexOvogRetka);
+                }
+
+            }
+            stupci[indexRstupca].push(količnik);
+            if (količnik < najmanjiKoličnik) {
+                najmanjiKoličnik = količnik;
+                indexNajmanjegKoličnika = indexOvogRetka;
+            }
+        }
+    });
+
+    // Ako je stupac R pun null-ova, prekini cijeli ovaj proces.
+    let postojiDaljnjeRješenje = false;
+    stupci[indexRstupca].forEach(element => {
+        if (element != null) {
+            postojiDaljnjeRješenje = true;
+        }
+    });
+
+    if (!postojiDaljnjeRješenje) return false;
+
+    // U ovom trenutku imamo stupacR popunjen najmanje jednim brojem i možda nullovima.
+
+    // Tražimo degeneraciju!
+
+    var indexStupcaPrveVarijable = stupci.map((stupac, index) => { if (stupac.nazivStupca == "x1") return index });
+
+    if (!postojiDegeneracija) {
+        indeksVodećegRetka = indexNajmanjegKoličnika;
+    } else if (postojiDegeneracija) {
+
+        let minimalniBroj = Infinity;
+        let indeksMinRezultataDijeljenja = -1;
+
+        for (let i = indexStupcaPrveVarijable; i < indexStupcaPrveVarijable + brojVarijabli; i++) {
+            if (i == indeksVodećegStupca) continue; // Ne želimo razrješavati degeneraciju istim stupcem!
+            let stupacVećDegeneriran = false;
+
+            stupci[i].forEach((value, index) => {
+                let rezultatDijeljenja = value / stupci[indeksVodećegStupca][index];
+                if (rezultatDijeljenja == minimalniBroj) {
+                    stupacVećDegeneriran = true; // Već su dva isti brojevi, nastavi na sljedeći stupac jer je i ovdje degeneracija.
+                }
+                if (!stupacVećDegeneriran) {
+                    minimalniBroj = rezultatDijeljenja;
+                    indeksMinRezultataDijeljenja = index;
+                }
+            });
+
+            if (!stupacVećDegeneriran && minimalniBroj !== Infinity) {
+                indeksVodećegRetka = indeksMinRezultataDijeljenja;
+                break;
+            }
+        }
+
+    }
+
+    if (indeksVodećegRetka == -1) return false;
+
+    return {indeksVodećegRetka: indeksVodećegRetka, indeksVodećegStupca: indeksVodećegStupca};
 }
 
 export function IzračunajPočetnuTablicu(argumenti) {
@@ -202,9 +328,13 @@ export function IzračunajPočetnuTablicu(argumenti) {
         vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: argumenti.naziviVarijabli[index] }));
     }
 
-    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "R" }));
+    vrijednostiStupaca.push(IzračunajStupacPrveTablice({ ...argumenti, nazivStupca: "R" })); // Samo pripremi R stupac.
 
-    return ParsirajStupceURetke([...vrijednostiStupaca]);
+    var retci = ParsirajStupceURetke([...vrijednostiStupaca]);
+
+    IzračunajStupacR(vrijednostiStupaca, retci, argumenti.smjer, argumenti.brojVarijabli);
+
+    return retci;
 }
 
 export function IzračunajSljedećuIteraciju(bivšaSimpleksica, smjer) {
