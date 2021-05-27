@@ -7,7 +7,10 @@ import {
     Tr,
     Th,
     Td,
-    Td2Cols
+    Td2Cols,
+    TdIspod,
+    TdDj,
+    TdZjCj
 } from './SimpleksTablicaStyle';
 import { IzračunajPočetnuTablicu } from '../../lib/functions/iteracijeIzračun';
 import { PodaciContext } from '../Context/PodaciContext'
@@ -59,18 +62,27 @@ const SimpleksTablica = () => {
                     <TablicaBody>
                         {
                             redoviPočetneTablice.map((redak, index) => {
+                                var pocetakZjCjDijela = false;
                                 return (
                                     <Tr key={index}>
                                         {redak.map((value, index) => {
                                             if (value == "zjcj") {
-                                                return (<Td2Cols colSpan="2"><strong>Zj-Cj</strong></Td2Cols>);
+                                                pocetakZjCjDijela = true;
+                                                return (<TdZjCj colSpan="2"><strong>Zj-Cj</strong></TdZjCj>);
                                             } else if (value == "dj") {
-                                                return (<Td2Cols colSpan="2"><strong>dj</strong></Td2Cols>);
+                                                pocetakZjCjDijela = false;
+                                                return (<TdDj colSpan="2"><strong>dj</strong></TdDj>);
                                             } else if (value === null) {
                                                 return;
-                                            } else return (
-                                                <Td>{value}</Td>
-                                            )
+                                            } else if (!pocetakZjCjDijela) {
+                                                return (
+                                                    <Td>{value}</Td>
+                                                )
+                                            } else {
+                                                return (
+                                                    <TdIspod>{value}</TdIspod>
+                                                )
+                                            }
                                         })}
                                     </Tr>
                                 )

@@ -206,7 +206,7 @@ const FunkcijaCilja = () => {
     return (
         <Container>
             <Label htmlFor="koefUFunkCilja">Koeficijenti uz nepoznanice: </Label>
-            <Input display="block" name="koefUFunkCilja" placeholder="npr. 10 20 30" style={{ width: labelWidth }} onChange={(event) => parseNepoznanice(event.target)} />
+            <Input defaultValue="15 20 30" display="block" name="koefUFunkCilja" placeholder="npr. 10 20 30" style={{ width: labelWidth }} onChange={(event) => parseNepoznanice(event.target)} />
             {funkcijaCilja &&
                 <>
                     <Label htmlFor="funkCilja">Z = {funkcijaCilja} &#8594;</Label>
@@ -218,7 +218,7 @@ const FunkcijaCilja = () => {
                     {smjer &&
                         <>
                             <Label htmlFor="brojUvjeta" display="block">Broj uvjeta: </Label>
-                            <Input width="50px" textAlign="center" display="block" name="brojUvjeta" placeholder="npr. 3" onChange={(event) => promjenaBrojaUvjeta(event.target.value)} />
+                            <Input defaultValue="3" width="50px" textAlign="center" display="block" name="brojUvjeta" placeholder="npr. 3" onChange={(event) => promjenaBrojaUvjeta(event.target.value)} />
                         </>
                     }
                 </>
@@ -228,14 +228,14 @@ const FunkcijaCilja = () => {
                     return (
                         <div key={index}>
                             <Label htmlFor="koefUPoljuUvjeta">Koeficijenti uz {index + 1}. uvjet: </Label>
-                            <Input name="koefUPoljuUvjeta1" placeholder={placeholderKoeficijenata} onChange={(event) => odrediUvjet(index, "lijevaStranaUvjeta", event.target.value)} />
+                            <Input defaultValue="2 2 1" name="koefUPoljuUvjeta1" placeholder={placeholderKoeficijenata} onChange={(event) => odrediUvjet(index, "lijevaStranaUvjeta", event.target.value)} />
                             <Select name="koefUPoljuUvjeta2" onChange={(event) => odrediUvjet(index, "ograničenjeUvjeta", event.target.value)}>
                                 <option>{nepoznataVrijednost}</option>
                                 <option>≤</option>
                                 <option>≥</option>
                                 <option>=</option>
                             </Select>
-                            <Input name="koefUPoljuUvjeta3" width="50px" placeholder="200" onChange={(event) => odrediUvjet(index, "desnaStranaUvjeta", event.target.value)} />
+                            <Input defaultValue="900" name="koefUPoljuUvjeta3" width="50px" placeholder="200" onChange={(event) => odrediUvjet(index, "desnaStranaUvjeta", event.target.value)} />
                             
                             {poljeParsiranihUvjeta && poljeParsiranihUvjeta[index]?.length !== 0 &&
                                 <Label color={uvjetPotpun(poljeUvjeta[index]) ? "green" : "darkred"} >{poljeParsiranihUvjeta[index]}</Label>
