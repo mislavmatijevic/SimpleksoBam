@@ -1,3 +1,9 @@
+# SimpleksoBam
+Program koji služi rješavanju simpleks tablice za kolegij OI na FOI-ju.
+Nije nikad dovršen...
+
+## Slijede default upute o Reactu.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
